@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "Disney Deal Tracker Assistant",
+  "version": "1.0.0",
+  "description": "Automatically find and apply Disney resort deals while browsing Disney.com. Powered by Javari AI.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://disneyworld.disney.go.com/*",
+    "https://disneyland.disney.go.com/*",
+    "https://craudiovizai.com/*",
+    "https://*.vercel.app/*"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://disneyworld.disney.go.com/*",
+        "https://disneyland.disney.go.com/*"
+      ],
+      "js": ["content/content-script.js"],
+      "css": ["content/styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["content/overlay.html", "icons/*"],
+      "matches": ["https://disneyworld.disney.go.com/*", "https://disneyland.disney.go.com/*"]
+    }
+  ]
+}
