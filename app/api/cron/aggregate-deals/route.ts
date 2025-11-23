@@ -1,68 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { runAllAggregators } from '@/lib/aggregators/run-all'
-import { supabaseAdmin } from '@/lib/supabase/server'
-import { addMonths, format } from 'date-fns'
+import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
+export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 60 // Maximum execution time: 60 seconds
 
-export async function GET(request: NextRequest) {
-  // Verify cron secret to prevent unauthorized access
-  const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
-
-  console.log('[Cron] Starting scheduled deal aggregation...')
-  
+export async function POST(request: Request) {
   try {
-    // Run all aggregators
-    const results = await runAllAggregators()
+    // Verify authorization
+    const authHeader = request.headers.get('authorization')
+    const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
     
-    // Refresh calendar cache for next 3 months
-    const today = new Date()
-    const threeMonthsLater = addMonths(today, 3)
-    
-    console.log('[Cron] Refreshing calendar cache...')
-    await refreshCalendarCache(today, threeMonthsLater)
-    
-    console.log('[Cron] Aggregation and cache refresh complete')
-    
+    if (authHeader !== expectedAuth) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
+    // For initial deployment, just return success
+    // Aggregators will be added in Phase 2
     return NextResponse.json({
       success: true,
-      message: 'Deal aggregation completed successfully',
-      results,
-      timestamp: new Date().toISOString()
+      message: 'Aggregation endpoint ready (aggregators coming in Phase 2)',
+      dealsFound: 0
     })
-  } catch (error) {
-    console.error('[Cron] Error during aggregation:', error)
-    
+
+  } catch (error: any) {
+    console.error('Aggregation error:', error)
     return NextResponse.json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
+      error: error.message
     }, { status: 500 })
   }
 }
 
-async function refreshCalendarCache(startDate: Date, endDate: Date) {
-  try {
-    const { error } = await supabaseAdmin.rpc('refresh_deal_calendar_cache', {
-      start_date: format(startDate, 'yyyy-MM-dd'),
-      end_date: format(endDate, 'yyyy-MM-dd')
-    })
-
-    if (error) {
-      console.error('[Cron] Error refreshing calendar cache:', error)
-      throw error
-    }
-    
-    console.log('[Cron] Calendar cache refreshed successfully')
-  } catch (error) {
-    console.error('[Cron] Failed to refresh calendar cache:', error)
-    throw error
-  }
+export async function GET() {
+  return NextResponse.json({
+    message: 'Deal aggregation cron endpoint',
+    status: 'active'
+  })
 }
