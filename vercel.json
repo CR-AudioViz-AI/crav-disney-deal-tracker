@@ -16,8 +16,5 @@
       "path": "/api/cron/check-alerts",
       "schedule": "*/15 * * * *"
     }
-  ],
-  "env": {
-    "NEXT_PUBLIC_APP_URL": "@disney-tracker-app-url"
-  }
+  ]
 }
