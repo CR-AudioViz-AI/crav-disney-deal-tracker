@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disney Deal Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 380px;
+      min-height: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #F9FAFB;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #0063B2 0%, #004a8a 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    
+    .content {
+      padding: 16px;
+    }
+    
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid #E5E7EB;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6B7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #111827;
+    }
+    
+    .section {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid #E5E7EB;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .deal-item {
+      padding: 12px;
+      background: #F9FAFB;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .deal-item:hover {
+      background: #F3F4F6;
+      transform: translateX(4px);
+    }
+    
+    .deal-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .deal-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+    
+    .deal-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #6B7280;
+    }
+    
+    .deal-badge {
+      background: #10B981;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 10px;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #0063B2;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #004a8a;
+    }
+    
+    .btn-secondary {
+      background: #F3F4F6;
+      color: #374151;
+    }
+    
+    .btn-secondary:hover {
+      background: #E5E7EB;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6B7280;
+    }
+    
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6B7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏰 Disney Deal Tracker</h1>
+    <p>Powered by Javari AI</p>
+  </div>
+  
+  <div class="content">
+    <div id="loading" class="loading">
+      <div>Loading deals...</div>
+    </div>
+    
+    <div id="dashboard" style="display: none;">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Active Deals</div>
+          <div class="stat-value" id="activeDeals">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Best Discount</div>
+          <div class="stat-value" id="bestDiscount">0%</div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <div class="section-title">
+          ⭐ Top Deals Today
+        </div>
+        <div id="topDeals"></div>
+      </div>
+      
+      <div class="section">
+        <div class="section-title">
+          🔔 Your Alerts
+        </div>
+        <div id="alerts"></div>
+      </div>
+      
+      <button class="btn btn-primary" onclick="openDashboard()">
+        Open Full Dashboard
+      </button>
+      <button class="btn btn-secondary" style="margin-top: 8px;" onclick="openSettings()">
+        Settings
+      </button>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
