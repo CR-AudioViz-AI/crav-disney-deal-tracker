@@ -1,0 +1,34 @@
+name: Deploy Database Schema
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    paths:
+      - 'supabase/migrations/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Deploy to Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          echo "🗄️ Deploying database schema..."
+          
+          # Install Supabase CLI
+          npm install -g supabase
+          
+          # Initialize Supabase project
+          supabase init
+          
+          # Link to your project
+          supabase link --project-ref kteobfyferrukqeolofj
+          
+          # Run migrations
+          supabase db push
+          
+          echo "✅ Database deployed!"
